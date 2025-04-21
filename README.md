@@ -5,7 +5,11 @@
 This project is a full-stack application that allows users to search for Amazon products by keyword. The application consists of two parts:
 
 - **Back-end:** An Express API running on Bun that scrapes Amazon listings.
+  - See more about the **back-end** by clicking [here](./back-end/README.md)
 - **Front-end:** A simple web interface that allows the user to search and view the results.
+  - See more about the **front-end** by clicking [here](./front-end/README.md)
+
+
 ## 🚀 Technologies Used
 
 ### 🔙 Backend
