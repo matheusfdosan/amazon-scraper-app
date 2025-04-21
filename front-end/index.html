@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="src/style.css" />
+    <title>Amazon Scraper App</title>
+  </head>
+  <body>
+    <header>
+      <h1>Amazon Product Scraper</h1>
+
+      <div id="search-section">
+        <input type="text" placeholder="Search Amazon" id="search-input" />
+        <span>
+          <button id="search-btn">Search</button>
+          <img src="/loading.gif" alt="loading" id="loading" />
+        </span>
+      </div>
+
+      <span id="message"></span>
+    </header>
+
+    <main>
+      <div id="products-container"></div>
+    </main>
+
+    <footer>
+      Developed by
+      <a href="https://github.com/matheusfdosan" target="_blank"
+        >Matheus Faustino</a
+      >
+    </footer>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
