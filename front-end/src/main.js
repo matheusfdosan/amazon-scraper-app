@@ -37,7 +37,7 @@ button.addEventListener("click", () => {
   }
 
   // fetch products from the back-end server
-  fetch(`http:// localhost:3000/api/scrape?keyword=${inputValue}`, {
+  fetch(`http://localhost:3000/api/scrape?keyword=${inputValue}`, {
     method: "GET",
   })
     .then((reponse) => reponse.json())
