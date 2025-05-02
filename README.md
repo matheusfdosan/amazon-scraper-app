@@ -82,8 +82,8 @@ The server will be available at: `http://localhost:3000/api/scrape?keyword=palav
 
 ```bash
 cd ../front-end
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
 Open your browser to `http://localhost:5173`
