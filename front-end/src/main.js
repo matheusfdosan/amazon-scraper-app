@@ -1,10 +1,12 @@
-const button = document.querySelector("#search-btn")
 const input = document.querySelector("#search-input")
 const productsContainer = document.querySelector("#products-container")
 const message = document.querySelector("#message")
 const loading = document.querySelector("img#loading")
+const searchSection = document.querySelector("#search-section")
 
-button.addEventListener("click", () => {
+searchSection.addEventListener("submit", (e) => {
+  e.preventDefault()
+
   // when the button is clicked, the values entered in the input will be captured
   const inputValue = input.value?.trim()
 
@@ -37,17 +39,25 @@ button.addEventListener("click", () => {
   }
 
   // fetch products from the back-end server
-  fetch(`http://localhost:3000/api/scrape?keyword=${inputValue}`, {
-    method: "GET",
-  })
+  fetch(
+    `http://localhost:3000/api/scrape?keyword=${encodeURIComponent(inputValue)}`
+  )
     .then((reponse) => reponse.json())
     .then((data) => {
-      // when the data is returned
-      data.forEach((product, index) => {
-        const { image, title, rating, reviewCount } = product
+      if (data.length === 0) {
+        message.classList.add("on")
+        message.textContent = "Product not found! Try another"
+        loading.classList.remove("show")
+      } else {
+        message.classList.remove("on")
+        message.textContent = ""
 
-        // HTML element for each product, I just insert the values in the right places using template literals
-        const htmlProduct = `
+        // when the data is returned
+        data.forEach((product, index) => {
+          const { image, title, rating, reviewCount } = product
+
+          // HTML element for each product, I just insert the values in the right places using template literals
+          const htmlProduct = `
         <div class="product-card" id="product-${index}">
           <img
             src="${image}"
@@ -63,10 +73,11 @@ button.addEventListener("click", () => {
         </div>
         `
 
-        // each product is added to the productsContainer as HTML
-        productsContainer.innerHTML += htmlProduct
-        loading.classList.remove("show")
-      })
+          // each product is added to the productsContainer as HTML
+          productsContainer.innerHTML += htmlProduct
+          loading.classList.remove("show")
+        })
+      }
     })
     .catch((err) => {
       loading.classList.remove("show")

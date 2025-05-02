@@ -87,6 +87,8 @@ I also started simulating human navigation when entering Amazon, I made a reques
 
 Another thing I noticed was that when I repeated searches with the same keyword, the scraper accessed Amazon every time, which slowed down the process and increased the risk of blocking. With caching, the responses are instantaneous, reducing the number of accesses to Amazon and saving server resources.
 
+\[**After 1 week**] After I did all these configurations, I realized that it hadn't worked, Amazon still kept blocking, and I had no idea what was going wrong. So, I searched on ChatGPT, Grok and Stack Overflow, and discovered that Amazon has a more advanced blocker for searches that are very popular, such as "Iphone", "PS5", "Xiaomi", these keywords are frequent targets of scrapers. And, after discovering this, I added prefixes to the search, to vary the searches with common human words, for example: from "Iphone" it became "Iphone on sale", from "PS5" it went to "PS5 available now". To make it look more like a human searching.
+
 ## 👨‍💻 Autor
 
 Developed by [Matheus Faustino](https://github.com/matheusfdosan)

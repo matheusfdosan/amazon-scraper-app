@@ -7,7 +7,7 @@ import cors from "cors"
 server.use(
   cors({
     // allows communication only with that source
-    origin: "http://localhost:5173",
+    // origin: "*",
     optionsSuccessStatus: 200,
   })
 )
@@ -54,10 +54,24 @@ server.get("/api/scrape", async (req, res) => {
   ]
   const randomXpid = xpidList[Math.floor(Math.random() * xpidList.length)]
 
+  // Amazon monitors extremely popular searches with high volume. So adding a prefix to your search helps you break out of the most common
+  const prefixes = [
+    "on sale",
+    "in promotion",
+    "good deal",
+    "lowest price",
+    "clearance",
+    "under 100",
+    "for sale",
+    "available now",
+  ]
+
   // encodeURIComponentto ensure that spaces and special characters are safe in the URL
   const amazonURL = `https://www.amazon.com/s?k=${encodeURIComponent(
+    keyword + " " + prefixes[Math.floor(Math.random() * prefixes.length)]
+  )}&__mk_en_US=ÅMÅŽÕÑ&qid=${timestamp}&sprefix=${encodeURIComponent(
     keyword
-  )}&qid=${timestamp}&xpid=${randomXpid}&ref=sr_pg_1`
+  )}%2Caps%2C2${Math.floor(Math.random() * 99)}&xpid=${randomXpid}&ref=sr_pg_1`
 
   // function for fetchProducts
   async function fetchProduct(url) {
@@ -69,8 +83,13 @@ server.get("/api/scrape", async (req, res) => {
           "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
         "Accept-Encoding": "gzip, deflate, br",
+        Referer: "https://www.amazon.com/",
         Connection: "keep-alive",
         "Upgrade-Insecure-Requests": "1",
+        "Sec-Fetch-Dest": "document",
+        "Sec-Fetch-Mode": "navigate",
+        "Sec-Fetch-Site": "same-origin",
+        "Sec-Fetch-User": "?1",
       }
 
       // before accessing the search page, make requests to other Amazon pages to mimic the behavior of a user browsing.
@@ -126,15 +145,22 @@ server.get("/api/scrape", async (req, res) => {
       cache[keyword] = allProductsOrganized
 
       // returns data in JSON format
-      res.json(allProductsOrganized)
+      if (allProductsOrganized.length === 0) {
+        res.json(["o código está de putaria"])
+      } else {
+        res.json(allProductsOrganized)
+      }
 
       console.log("Amazon successfully accessed!")
+      console.log(url)
+      console.log(allProductsOrganized)
     } catch (error) {
       // if an error occurs, send a JSON with the error message and log in to the terminal
       res
         .status(500)
-        .json({ error: "Error accessing Amazon. Please try again later." })
+        .json([{ error: "Error accessing Amazon. Please try again later." }])
       console.error("Error to fetch products: " + error)
+      console.log(url)
     }
   }
 

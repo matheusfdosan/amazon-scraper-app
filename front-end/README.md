@@ -41,13 +41,13 @@ amazon-scraper-frontend/
      ```
    - Install dependencies:
      ```bash
-     npm install
+     bun install
      ```
 
 3. **Development**:
    - Start the Vite development server:
      ```bash
-     npm run dev
+     bun run dev
      ```
    - Open your browser and go to `http://localhost:5173` to view the application.
 
