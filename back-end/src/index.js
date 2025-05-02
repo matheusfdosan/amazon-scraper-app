@@ -60,7 +60,7 @@ server.get("/api/scrape", async (req, res) => {
     "in promotion",
     "good deal",
     "lowest price",
-    "clearance",
+    "recently",
     "under 100",
     "for sale",
     "available now",
@@ -72,6 +72,8 @@ server.get("/api/scrape", async (req, res) => {
   )}&__mk_en_US=ÅMÅŽÕÑ&qid=${timestamp}&sprefix=${encodeURIComponent(
     keyword
   )}%2Caps%2C2${Math.floor(Math.random() * 99)}&xpid=${randomXpid}&ref=sr_pg_1`
+
+  let tryAgain
 
   // function for fetchProducts
   async function fetchProduct(url) {
@@ -118,16 +120,30 @@ server.get("/api/scrape", async (req, res) => {
 
       // iterates through each product in the list and extracts the data
       products.forEach((product) => {
-        const title = product
-          .querySelector(".s-title-instructions-style > a > h2 span")
-          ?.textContent?.trim()
-        const rating = product.querySelector(".a-icon-alt")?.textContent?.trim()
-        const reviewCount = product
+        let title = product
           .querySelector(
-            "div.a-row.a-size-small > span.rush-component > div > a span"
+            "div.a-section.a-spacing-none.puis-padding-right-small.s-title-instructions-style > a > h2 > span"
           )
           ?.textContent?.trim()
+        const rating = product
+          .querySelector(".a-icon.a-icon-star-small > span.a-icon-alt")
+          ?.textContent?.trim()
+        let reviewCount = product
+          .querySelector(".a-size-base.s-underline-text")
+          ?.textContent?.trim()
         const image = product.querySelector(".s-image")?.src
+
+        // try get datas again if response was undefined
+        if (title === undefined && reviewCount == undefined) {
+          title = product
+            .querySelector("h2.a-size-small.a-spacing-none")
+            ?.textContent?.trim()
+          reviewCount = product
+            .querySelector(
+              ".a-icon.a-icon-star-mini.mvt-review-star-mini.mvt-review-star-with-margin.aok-align-bottom > span.a-icon-alt"
+            )
+            ?.textContent?.trim()
+        }
 
         // if the search finds at least the title and image of the product, which are the most important, then this data can be saved
         if (title && image) {
@@ -142,18 +158,23 @@ server.get("/api/scrape", async (req, res) => {
       })
 
       // saves data in the cache for this keyword, avoiding repeated calls
-      cache[keyword] = allProductsOrganized
+      if (allProductsOrganized.length !== 0) {
+        cache[keyword] = allProductsOrganized
+      }
 
       // returns data in JSON format
-      if (allProductsOrganized.length === 0) {
-        res.json(["o código está de putaria"])
+      if (
+        allProductsOrganized.length === 0 ||
+        allProductsOrganized.length === 1
+      ) {
+        res.json([])
       } else {
         res.json(allProductsOrganized)
       }
 
       console.log("Amazon successfully accessed!")
       console.log(url)
-      console.log(allProductsOrganized)
+      console.log("products foudend: " + allProductsOrganized.length)
     } catch (error) {
       // if an error occurs, send a JSON with the error message and log in to the terminal
       res
