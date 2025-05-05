@@ -71,7 +71,7 @@ server.get("/api/scrape", async (req, res) => {
     keyword + " " + prefixes[Math.floor(Math.random() * prefixes.length)]
   )}&__mk_en_US=ÅMÅŽÕÑ&qid=${timestamp}&sprefix=${encodeURIComponent(
     keyword
-  )}%2Caps%2C2${Math.floor(Math.random() * 99)}&xpid=${randomXpid}&ref=sr_pg_1`
+  )}%2Caps%2C${Math.floor(Math.random() * 100) + 200}&xpid=${randomXpid}&ref=sr_pg_1`
 
   let tryAgain
 
