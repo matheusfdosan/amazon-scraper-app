@@ -27,7 +27,9 @@ const cache = {}
 // main route for scraping
 server.get("/api/scrape", async (req, res) => {
   // taptures the keyword passed by the URL
-  const keyword = req.query.keyword
+  const getKeyword = req.query.keyword
+  const keyword = getKeyword.split("").map(letter => letter === " " ? "+" : letter).join("")
+
 
   // if you don't have the keyword, the server's response will be Bad Request
   if (!keyword) return res.status(400).send("Keyword not provided")
@@ -54,26 +56,32 @@ server.get("/api/scrape", async (req, res) => {
   ]
   const randomXpid = xpidList[Math.floor(Math.random() * xpidList.length)]
 
+  // add random refs
+  const refsList = [
+    "sr_pg_1", 
+    "sr_pg_2", 
+    "nb_sb_noss", 
+    "nb_sb_ss_fb_1_5", 
+    "sr_nr_p_n_feature_keywords_browse-bin_0" 
+  ]
+  const ref = refsList[Math.floor(Math.random() * refsList.length)]
+
+
   // Amazon monitors extremely popular searches with high volume. So adding a prefix to your search helps you break out of the most common
   const prefixes = [
-    "on sale",
-    "in promotion",
-    "good deal",
-    "lowest price",
+    "on+sale",
+    "in+promotion",
+    "good+deal",
+    "lowest+price",
     "recently",
-    "under 100",
-    "for sale",
-    "available now",
+    "under+100",
+    "for+sale",
+    "available+now",
   ]
+  const prefix = prefixes[Math.floor(Math.random() * prefixes.length)]
 
   // encodeURIComponentto ensure that spaces and special characters are safe in the URL
-  const amazonURL = `https://www.amazon.com/s?k=${encodeURIComponent(
-    keyword + " " + prefixes[Math.floor(Math.random() * prefixes.length)]
-  )}&__mk_en_US=ÅMÅŽÕÑ&qid=${timestamp}&sprefix=${encodeURIComponent(
-    keyword
-  )}%2Caps%2C${Math.floor(Math.random() * 100) + 200}&xpid=${randomXpid}&ref=sr_pg_1`
-
-  let tryAgain
+  const amazonURL = `https://www.amazon.com/s?k=${keyword + "+" + prefix}&__mk_en_US=ÅMÅŽÕÑ&qid=${timestamp}&sprefix=${keyword + "+" + prefix}%2Caps%2C${[179, 172, 181][Math.floor(Math.random() * 3)]}&xpid=${randomXpid}&ref=${ref}`
 
   // function for fetchProducts
   async function fetchProduct(url) {
@@ -164,8 +172,7 @@ server.get("/api/scrape", async (req, res) => {
 
       // returns data in JSON format
       if (
-        allProductsOrganized.length === 0 ||
-        allProductsOrganized.length === 1
+        allProductsOrganized.length === 0
       ) {
         res.json([])
       } else {
